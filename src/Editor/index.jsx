@@ -1,50 +1,43 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import * as selectors from '../store/selectors.js'
+import * as actionCreators from '../store/actions'
 import CodeMirror from 'react-codemirror'
 import 'codemirror/mode/javascript/javascript'
 import 'codemirror/mode/xml/xml'
 import 'codemirror/mode/markdown/markdown'
 import 'codemirror/lib/codemirror.css'
+import * as ku from '../lib/ke-utils'
 
 class Editor extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      code: '# Heading\n\nSome **bold** and _italic_ text\nBy [Jed Watson](https://github.com/JedWatson)',
-      readOnly: false,
-      mode: 'markdown',
-    }
-  }
-  defaults = {
-    markdown: '# Heading\n\nSome **bold** and _italic_ text\nBy [Jed Watson](https://github.com/JedWatson)',
-    javascript: 'var component = {\n\tname: "react-codemirror",\n\tauthor: "Jed Watson",\n\trepo: "https://github.com/JedWatson/react-codemirror"\n};'
-  };
-
-  updateCode (newCode) {
-    this.setState((prevState, props) => ({
-      code: newCode,
-    }));
   }
 
-
+  componentDidMount() {
+    console.log(this.props)
+  }
 
 
   render() {
+    const { updateCode } = this.props
 
+    const handleUpdateCode = (newCode) => {
+      ku.log('newCode', newCode, 'blue')
+      updateCode(newCode)
+    }
     const options = {
       lineNumbers: true,
-      readOnly: this.state.readOnly,
-      mode: this.state.mode
+      mode: 'javascript'
     };
 
-
-    console.log(this.defaults)
     return (
       <div>
-      <h1>hi</h1>
+        <h1>Code Editor</h1>
         <CodeMirror
           ref="editor"
-          value={this.state.code}
-          onChange={this.updateCode}
+          value={this.props.code}
+          onChange={handleUpdateCode}
           options={options}
           autoFocus={true}
         />
@@ -53,4 +46,8 @@ class Editor extends Component {
   }
 }
 
-export default Editor
+const mapStateToProps = (state) => ({
+  code: selectors.getCode(state)
+})
+
+export default connect(mapStateToProps, actionCreators)(Editor)
