@@ -30,7 +30,7 @@ class Editor extends Component {
       lineNumbers: true,
       mode: 'javascript'
     };
-
+    console.log('render', '', 'blue')
     return (
       <div>
         <h1>Code Editor</h1>
